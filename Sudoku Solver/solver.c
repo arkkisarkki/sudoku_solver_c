@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <time.h>
-#include <stdlib.h>
 
 #define ALL_POSSIBLE 0x1FFU
 #define ERROR 0xFF
+#define false 0
+#define true 1
 
 typedef unsigned int Count;
 typedef unsigned int Value;
 typedef uint16_t Possibilities;
 typedef unsigned int Coordinate;
 typedef unsigned int Index;
+typedef uint32_t bool;
 
 typedef struct Sudoku_
 {
