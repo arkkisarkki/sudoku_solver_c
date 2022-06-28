@@ -15,6 +15,9 @@ typedef unsigned int Index;
 
 typedef uint32_t bool;
 
+/**
+ * Data type for a sudoku. Also contains a snapshot of the last secure state (before any quesses have been made) to revert back to if a wrong guess is made.
+ */
 typedef struct Sudoku_
 {
 	union
@@ -33,6 +36,9 @@ typedef struct Sudoku_
 
 } Sudoku;
 
+/**
+ * Data type for the nine special 3*3 blocks in a sudoku.
+ */
 typedef struct Block_
 {
 	union
@@ -42,6 +48,9 @@ typedef struct Block_
 	};
 } Block;
 
+/**
+ * Simple data type for x and y coordinates.
+ */
 typedef struct Coordinates_
 {
 	Coordinate row;
@@ -51,8 +60,6 @@ typedef struct Coordinates_
 
 
 void print_game(Sudoku* sudoku);
-
-void print_state(Value* state);
 
 void set_state(Sudoku* sudoku, const Value* state);
 

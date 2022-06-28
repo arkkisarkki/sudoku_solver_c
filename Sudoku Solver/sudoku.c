@@ -1,6 +1,11 @@
 #include "sudoku.h"
 #include <stdio.h>
 
+/**
+ * Print the game state to stdout.
+ * 
+ * \param sudoku The sudoku to print.
+ */
 void print_game(Sudoku* sudoku)
 {
 	for (Coordinate row = 0; row < 9; row++)
@@ -30,16 +35,12 @@ void print_game(Sudoku* sudoku)
 	printf("\n");
 }
 
-void print_state(Value* state)
-{
-	printf("[");
-	for (Index i = 0; i < 9 * 9; i++)
-	{
-		printf("%d,", state[i]);
-	}
-	printf("]\n");
-}
-
+/**
+ * Initialize a Sudoku to a given state.
+ * 
+ * \param sudoku The sudoku to initialize.
+ * \param state The state to set.
+ */
 void set_state(Sudoku* sudoku, const Value* state)
 {
 	for (Index i = 0; i < 9 * 9; i++)
@@ -52,6 +53,11 @@ void set_state(Sudoku* sudoku, const Value* state)
 	}
 }
 
+/**
+ * Take a snapshot of the current state.
+ * 
+ * \param sudoku
+ */
 void set_last_secure_state(Sudoku* sudoku)
 {
 	for (Index i = 0; i < 9 * 9; i++)
@@ -61,6 +67,13 @@ void set_last_secure_state(Sudoku* sudoku)
 	sudoku->last_secure_state_set = true;
 }
 
+/**
+ * Get the full row containing the given coordinates.
+ * 
+ * \param sudoku
+ * \param buffer The buffer to store the values into.
+ * \param row The index of the row to get.
+ */
 void get_row(Sudoku* sudoku, Value* buffer, Coordinate row)
 {
 	for (Coordinate column = 0; column < 9; column++)
@@ -69,6 +82,13 @@ void get_row(Sudoku* sudoku, Value* buffer, Coordinate row)
 	}
 }
 
+/**
+ * Get the full column containing the given coordinates.
+ * 
+ * \param sudoku
+ * \param buffer The buffer to store the values into.
+ * \param column The index of the column to get.
+ */
 void get_column(Sudoku* sudoku, Value* buffer, Coordinate column)
 {
 	for (Coordinate row = 0; row < 9; row++)
@@ -77,6 +97,14 @@ void get_column(Sudoku* sudoku, Value* buffer, Coordinate column)
 	}
 }
 
+/**
+ * Get the full block containing the given coordinates.
+ * 
+ * \param sudoku
+ * \param buffer The buffer to store the values into.
+ * \param block_row The row index of the *block* (0-2).
+ * \param block_column The column index of the *block* (0-2).
+ */
 void get_block(Sudoku* sudoku,
 			   Block* buffer,
 			   Coordinate block_row,
@@ -92,6 +120,14 @@ void get_block(Sudoku* sudoku,
 	}
 }
 
+/**
+ * Get a block from the last secure snapshot.
+ * 
+ * \param sudoku
+ * \param buffer The buffer to store the values into.
+ * \param block_row The row index of the *block* (1-2).
+ * \param block_column The column index of the *block* (1-2).
+ */
 void get_last_secure_block(Sudoku* sudoku,
 						   Block* buffer,
 						   Coordinate block_row,

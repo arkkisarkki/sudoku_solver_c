@@ -4,8 +4,14 @@
 #include <stdlib.h>
 #include <time.h>
 
+/**
+ * Bitfield type for possible values for a square. For example, 6 = 0b110 would imply that the values 2 and 3 are possible.
+ */
 typedef uint16_t Possibilities;
 
+/**
+ * Data type encoding resetable squares around a particular square.
+ */
 typedef struct PossibleResets_
 {
 	Possibilities row;
@@ -14,19 +20,14 @@ typedef struct PossibleResets_
 
 } PossibleResets;
 
-static bool states_are_equal(Value* state1, Value* state2)
-{
-	for (Index i = 0; i < 9 * 9; i++)
-	{
-		if (state1[i] != state2[i])
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
+/**
+ * Get possible values for given coordinates.
+ *
+ * \param sudoku Pointer to the sudoku currently being solved
+ * \param row Row coordinate
+ * \param column Column coordinate
+ * \return Possible values for the square
+ */
 static Possibilities get_possibilities(Sudoku* sudoku,
 									   Coordinate row,
 									   Coordinate column)
@@ -65,6 +66,12 @@ static Possibilities get_possibilities(Sudoku* sudoku,
 	return retval;
 }
 
+/**
+ * Counts the high bits in a Possibilites bitfield.
+ *
+ * \param possibilities
+ * \return The count of possible values.
+ */
 static Count count_possibilities(Possibilities possibilities)
 {
 	Count retval = 0;
@@ -79,6 +86,12 @@ static Count count_possibilities(Possibilities possibilities)
 	return retval;
 }
 
+/**
+ * Returns the (assumed) only possible value from a Possibilities.
+ *
+ * \param possibilities
+ * \return The only possible value.
+ */
 static Value get_only_possible(Possibilities possibilities)
 {
 	for (Index i = 0; i < 9; i++)
@@ -92,6 +105,12 @@ static Value get_only_possible(Possibilities possibilities)
 	return ERROR;
 }
 
+/**
+ * Returns a random possible value from a possibilities.
+ *
+ * \param possibilities
+ * \return A random possible value.
+ */
 static Value get_random_possible(Possibilities possibilities)
 {
 	Count count = count_possibilities(possibilities);
@@ -112,7 +131,13 @@ static Value get_random_possible(Possibilities possibilities)
 	return ERROR;
 }
 
-static bool step(Sudoku* sudoku)
+/**
+ * Performs one iteration of the solver algorithm. First inserts all "safe" values and then proceeds to make guesses. 
+ * If a guess leads to a square where no value is possible, adjacent squares are cleared randomly until some value becomes possible.
+ *
+ * \param sudoku The game to solve.
+ */
+static void step(Sudoku* sudoku)
 {
 	bool changed = false;
 	bool certain = true;
@@ -243,7 +268,6 @@ static bool step(Sudoku* sudoku)
 
 	if (!changed)
 	{
-		changed = true;
 		sudoku->squares_2d[lowest_possible_coords.row]
 			[lowest_possible_coords.column] =
 			get_random_possible(lowest_possibilities);
@@ -253,11 +277,14 @@ static bool step(Sudoku* sudoku)
 	{
 		set_last_secure_state(sudoku);
 	}
-
-	return changed;
 }
 
-static int solve(Sudoku* sudoku)
+/**
+ * Solves a given sudoku.
+ * 
+ * \param sudoku The sudoku to solve.
+ */
+static void solve(Sudoku* sudoku)
 {
 	while (sudoku->set_count < 9 * 9)
 	{
@@ -268,6 +295,12 @@ static int solve(Sudoku* sudoku)
 	}
 }
 
+/**
+ * Generates a new sudoku.
+ * 
+ * \param buffer The buffer to place the generated values into.
+ * \param difficulty How many squares to leave empty.
+ */
 static void generate_sudoku(Value* buffer, unsigned int difficulty)
 {
 	// Produce solution from empty start
