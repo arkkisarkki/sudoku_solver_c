@@ -18,5 +18,13 @@
     <ClCompile Include="solver.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sudoku.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sudoku.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
