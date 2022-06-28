@@ -245,6 +245,7 @@ static Value get_random_possible(Possibilities possibilities)
 static bool step(Sudoku* sudoku)
 {
     bool changed = false;
+    bool certain = true;
     Possibilities lowest_possibilities = ALL_POSSIBLE;
     Coordinates lowest_possible_coords = { 0 };
 
@@ -258,6 +259,7 @@ static bool step(Sudoku* sudoku)
 
                 if (possibilities == 0)
                 {
+                    certain = false;
                     while (possibilities == 0)
                     {
                         Coordinate row_in_block = row % 3;
@@ -349,6 +351,7 @@ static bool step(Sudoku* sudoku)
 
                 if (count_possibilities(possibilities) <= count_possibilities(lowest_possibilities))
                 {
+                    certain = false;
                     lowest_possibilities = possibilities;
                     lowest_possible_coords.row = row;
                     lowest_possible_coords.column = column;
@@ -371,7 +374,7 @@ static bool step(Sudoku* sudoku)
             get_random_possible(lowest_possibilities);
         sudoku->set_count++;
     }
-    else if (!sudoku->last_secure_state_set)
+    else if (!sudoku->last_secure_state_set && certain)
     {
         set_last_secure_state(sudoku);
     }
@@ -379,8 +382,9 @@ static bool step(Sudoku* sudoku)
     return changed;
 }
 
-static void solve(Sudoku* sudoku)
+static int solve(Sudoku* sudoku)
 {
+
     while (sudoku->set_count < 9*9)
     {
 #if VERBOSE
@@ -426,16 +430,21 @@ int main()
 
     while (true)
     {
-        Value initial_state[9 * 9] = { 0,0,3,0,0,0,2,9,0,1,0,0,0,0,9,0,0,0,0,0,5,6,1,3,0,0,0,0,4,8,0,0,6,0,0,0,0,0,0,0,4,0,0,0,0,0,1,0,0,8,7,0,0,0,0,0,6,0,0,0,8,0,0,0,0,1,0,0,0,3,0,0,8,0,0,0,0,0,0,0,0 };
-        /*
-        generate_sudoku(initial_state, 70);
-        print_state(initial_state);
-        */
+        // Value initial_state[9 * 9] = { 0,0,3,0,0,0,2,9,0,1,0,0,0,0,9,0,0,0,0,0,5,6,1,3,0,0,0,0,4,8,0,0,6,0,0,0,0,0,0,0,4,0,0,0,0,0,1,0,0,8,7,0,0,0,0,0,6,0,0,0,8,0,0,0,0,1,0,0,0,3,0,0,8,0,0,0,0,0,0,0,0 };
+        
+        Value initial_state[9 * 9] = { 0 };
+        int difficulty = rand() % 100;
+        generate_sudoku(initial_state, difficulty);
+        // print_state(initial_state);
+        
         Sudoku game = { 0 };
         set_state(&game, initial_state);
+
+        printf("Challenge (difficulty %d):\n", difficulty);
         print_game(&game);
 
         solve(&game);
+        printf("Solution:\n");
         print_game(&game);
     }
     return 0;
